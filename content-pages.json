@@ -1,0 +1,293 @@
+[
+  {
+    "title": "Información Financiera",
+    "slug": "informacion-financiera",
+    "url": "/informacion-financiera",
+    "file": "docs/informacion-financiera/index.html",
+    "category": "Información legal",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [
+      "/p/informacion-financiera-cft-tasas.html"
+    ],
+    "aliases": []
+  },
+  {
+    "title": "Política de Privacidad",
+    "slug": "politica-de-privacidad",
+    "url": "/politica-de-privacidad",
+    "file": "docs/politica-de-privacidad/index.html",
+    "category": "Información legal",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [
+      "/p/politica-de-privacidad-credisnet.html"
+    ],
+    "aliases": []
+  },
+  {
+    "title": "Preguntas Frecuentes",
+    "slug": "preguntas-frecuentes",
+    "url": "/preguntas-frecuentes",
+    "file": "docs/preguntas-frecuentes/index.html",
+    "category": "Ayuda",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [
+      "/p/preguntas-frecuentes-prestamos-con.html"
+    ],
+    "aliases": []
+  },
+  {
+    "title": "Préstamos para Armada Argentina",
+    "slug": "prestamos-armada-argentina",
+    "url": "/prestamos-armada-argentina",
+    "file": "docs/prestamos-armada-argentina/index.html",
+    "category": "Fuerzas Armadas",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [
+      "/p/prestamos-armada-argentina-decreto-1412.html"
+    ],
+    "aliases": []
+  },
+  {
+    "title": "Préstamos para Docentes y Auxiliares",
+    "slug": "prestamos-para-docentes-y-auxiliares",
+    "url": "/prestamos-para-docentes-y-auxiliares",
+    "file": "docs/prestamos-para-docentes-y-auxiliares/index.html",
+    "category": "Empleados públicos",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [
+      "/p/prestamos-docentes-y-auxiliares-dgcye.html"
+    ],
+    "aliases": [
+      "/prestamos-docentes-provincia-buenos-aires"
+    ]
+  },
+  {
+    "title": "Préstamos para Ejército Argentino",
+    "slug": "prestamos-ejercito-argentino",
+    "url": "/prestamos-ejercito-argentino",
+    "file": "docs/prestamos-ejercito-argentino/index.html",
+    "category": "Fuerzas Armadas",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [
+      "/p/prestamos-ejercito-argentino-decreto.html"
+    ],
+    "aliases": []
+  },
+  {
+    "title": "Préstamos para Fuerza Aérea Argentina",
+    "slug": "prestamos-fuerza-aerea-argentina",
+    "url": "/prestamos-fuerza-aerea-argentina",
+    "file": "docs/prestamos-fuerza-aerea-argentina/index.html",
+    "category": "Fuerzas Armadas",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [
+      "/p/prestamos-fuerza-aerea-argentina.html"
+    ],
+    "aliases": []
+  },
+  {
+    "title": "Préstamos para Fuerzas Armadas",
+    "slug": "prestamos-fuerzas-armadas",
+    "url": "/prestamos-fuerzas-armadas",
+    "file": "docs/prestamos-fuerzas-armadas/index.html",
+    "category": "Fuerzas Armadas",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [
+      "/p/prestamos-fuerzas-armadas-argentina.html"
+    ],
+    "aliases": []
+  },
+  {
+    "title": "Préstamos para Fuerzas de Seguridad",
+    "slug": "prestamos-fuerzas-de-seguridad",
+    "url": "/prestamos-fuerzas-de-seguridad",
+    "file": "docs/prestamos-fuerzas-de-seguridad/index.html",
+    "category": "Fuerzas de Seguridad",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [
+      "/p/prestamos-fuerzas-de-seguridad-federal.html"
+    ],
+    "aliases": [
+      "/prestamos-fuerzas-federales-seguridad"
+    ]
+  },
+  {
+    "title": "Préstamos para Jubilados y Pensionados IPS",
+    "slug": "prestamos-jubilados-pensionados-ips",
+    "url": "/prestamos-jubilados-pensionados-ips",
+    "file": "docs/prestamos-jubilados-pensionados-ips/index.html",
+    "category": "Empleados públicos",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [
+      "/p/prestamos-jubilados-y-pensionados-ips.html"
+    ],
+    "aliases": []
+  },
+  {
+    "title": "Préstamos para Empleados Públicos",
+    "slug": "prestamos-empleados-publicos",
+    "url": "/prestamos-empleados-publicos",
+    "file": "docs/prestamos-empleados-publicos/index.html",
+    "category": "Empleados públicos",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [
+      "/p/prestamos-para-empleados-publicos.html"
+    ],
+    "aliases": []
+  },
+  {
+    "title": "Préstamos para Personal de Salud",
+    "slug": "prestamos-personal-salud",
+    "url": "/prestamos-personal-salud",
+    "file": "docs/prestamos-personal-salud/index.html",
+    "category": "Empleados públicos",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [
+      "/p/prestamos-personal-de-la-salud.html"
+    ],
+    "aliases": []
+  },
+  {
+    "title": "Préstamos para Policía de la Provincia de Buenos Aires",
+    "slug": "prestamos-policia-provincia-buenos-aires",
+    "url": "/prestamos-policia-provincia-buenos-aires",
+    "file": "docs/prestamos-policia-provincia-buenos-aires/index.html",
+    "category": "Empleados públicos",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [
+      "/p/prestamos-policia-bonaerense-decreto.html"
+    ],
+    "aliases": [
+      "/prestamos-policia-bonaerense"
+    ]
+  },
+  {
+    "title": "Préstamos para Policía Federal Argentina",
+    "slug": "prestamos-policia-federal",
+    "url": "/prestamos-policia-federal",
+    "file": "docs/prestamos-policia-federal/index.html",
+    "category": "Fuerzas de Seguridad",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [
+      "/p/prestamos-policia-federal-argentina.html"
+    ],
+    "aliases": []
+  },
+  {
+    "title": "Quiénes Somos",
+    "slug": "quienes-somos",
+    "url": "/quienes-somos",
+    "file": "docs/quienes-somos/index.html",
+    "category": "Empresa",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [
+      "/p/quienes-somos-credisnet.html"
+    ],
+    "aliases": []
+  },
+  {
+    "title": "Términos y Condiciones",
+    "slug": "terminos-y-condiciones",
+    "url": "/terminos-y-condiciones",
+    "file": "docs/terminos-y-condiciones/index.html",
+    "category": "Información legal",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [
+      "/p/terminos-y-condiciones-credisnet.html"
+    ],
+    "aliases": []
+  },
+  {
+    "title": "Préstamos para Servicio Penitenciario Bonaerense",
+    "slug": "prestamos-servicio-penitenciario-bonaerense",
+    "url": "/prestamos-servicio-penitenciario-bonaerense",
+    "file": "docs/prestamos-servicio-penitenciario-bonaerense/index.html",
+    "category": "Empleados públicos",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [],
+    "aliases": []
+  },
+  {
+    "title": "Préstamos para Gendarmería Nacional",
+    "slug": "prestamos-gendarmeria-nacional",
+    "url": "/prestamos-gendarmeria-nacional",
+    "file": "docs/prestamos-gendarmeria-nacional/index.html",
+    "category": "Fuerzas de Seguridad",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [],
+    "aliases": []
+  },
+  {
+    "title": "Préstamos para Prefectura Naval Argentina",
+    "slug": "prestamos-prefectura-naval-argentina",
+    "url": "/prestamos-prefectura-naval-argentina",
+    "file": "docs/prestamos-prefectura-naval-argentina/index.html",
+    "category": "Fuerzas de Seguridad",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [],
+    "aliases": []
+  },
+  {
+    "title": "Préstamos para Policía de Seguridad Aeroportuaria",
+    "slug": "prestamos-policia-seguridad-aeroportuaria",
+    "url": "/prestamos-policia-seguridad-aeroportuaria",
+    "file": "docs/prestamos-policia-seguridad-aeroportuaria/index.html",
+    "category": "Fuerzas de Seguridad",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [],
+    "aliases": []
+  },
+  {
+    "title": "Préstamos para Servicio Penitenciario Federal",
+    "slug": "prestamos-servicio-penitenciario-federal",
+    "url": "/prestamos-servicio-penitenciario-federal",
+    "file": "docs/prestamos-servicio-penitenciario-federal/index.html",
+    "category": "Fuerzas de Seguridad",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [],
+    "aliases": []
+  },
+  {
+    "title": "Préstamos para Policía de la Ciudad",
+    "slug": "prestamos-policia-de-la-ciudad",
+    "url": "/prestamos-policia-de-la-ciudad",
+    "file": "docs/prestamos-policia-de-la-ciudad/index.html",
+    "category": "Fuerzas de Seguridad",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [],
+    "aliases": []
+  },
+  {
+    "title": "Préstamos para Personal Retirado de Fuerzas",
+    "slug": "prestamos-personal-retirado-fuerzas",
+    "url": "/prestamos-personal-retirado-fuerzas",
+    "file": "docs/prestamos-personal-retirado-fuerzas/index.html",
+    "category": "Personal retirado",
+    "status": "pending",
+    "robots": "noindex,follow,noarchive",
+    "legacy_blogger_urls": [],
+    "aliases": []
+  }
+]
