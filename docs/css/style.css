@@ -664,3 +664,18 @@ body::before {
 
 .page-wrapper { background:transparent; min-height:80vh; padding:0 0 60px; }
 .page-content-area { max-width:1100px; margin:0 auto; padding:0; }
+
+/* ===================================================
+   AJUSTES PARA COMPACTAR EL HERO EN VERSIÓN MÓVIL
+   =================================================== */
+@media (max-width: 768px) {
+  #hero-infinite {
+    padding-top: 24px !important; 
+  }
+  .hero-top-content {
+    margin-bottom: 0 !important;
+  }
+  .carousel-viewport {
+    padding-top: 15px !important;
+  }
+}
