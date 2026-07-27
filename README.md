@@ -1,28 +1,25 @@
-# Credisnet Web — estructura final
+# Credisnet Web — versión final
 
-Sitio estático preparado para probar en **GitHub Pages** y publicar después en **Cloudflare Pages**.
+Sitio estático de Credisnet preparado para publicarse en **Cloudflare Pages** desde GitHub.
 
 ## Estado
 
-- Portada funcional dentro de `docs/index.html`.
-- 23 páginas internas con slugs definitivos.
-- Todas las páginas internas muestran `Contenido pendiente` y usan `noindex`.
-- No existen URLs públicas con `/p/` ni terminadas en `.html`.
-- Las direcciones históricas se conservan únicamente como redirecciones.
+- Portada final en `docs/index.html`.
+- 24 páginas internas finales con URLs limpias.
+- Header, menú móvil, footer e identidad visual unificados.
+- CSS centralizado en `docs/css/style.css` y `docs/css/pages.css`.
+- Interlinking, migas de pan, canonical, metadatos sociales y datos estructurados.
+- Sitemap con 25 URLs indexables.
+- Página 404 con `noindex`.
+- Redirecciones históricas en `docs/_redirects`.
+- Dominio canónico: `https://www.credisnet.com.ar`.
 
 ## Archivos de control
 
-- `URLS-DEFINITIVAS.md`: lista cerrada de rutas.
-- `PAGINAS-PENDIENTES.md`: checklist para incorporar contenido.
-- `content-pages.json`: inventario estructurado de páginas.
-- `docs/_redirects`: migración de URLs para Cloudflare Pages.
-
-## GitHub Pages
-
-1. Subir todo a la rama `main`.
-2. En `Settings → Pages`, seleccionar **GitHub Actions**.
-3. Esperar que el workflow termine en verde.
-4. Abrir `https://mtgproweb.github.io/credisnet-web/`.
+- `URLS-DEFINITIVAS.md`: inventario de rutas finales.
+- `PAGINAS-PENDIENTES.md`: confirma que no quedan páginas pendientes.
+- `content-pages.json`: inventario estructurado de las 24 páginas internas.
+- `scripts/validate_site.py`: valida páginas finales, enlaces, canonical, robots y sitemap.
 
 ## Cloudflare Pages
 
@@ -30,6 +27,10 @@ Sitio estático preparado para probar en **GitHub Pages** y publicar después en
 - Framework preset: `None`
 - Build command: vacío
 - Build output directory: `docs`
+
+## GitHub Pages de prueba
+
+El workflow crea una copia temporal no indexable en `_site`. En `Settings → Pages`, usar **GitHub Actions** si se desea mantener esa vista de prueba.
 
 ## Validación local
 
