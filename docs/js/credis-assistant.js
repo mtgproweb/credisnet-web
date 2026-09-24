@@ -255,12 +255,9 @@
     ];
 
     function faceLoop() {
-      if (reducedMotion) {
-        setLook('front');
-        setMouth('soft');
-        return;
-      }
-
+      /* Las expresiones faciales siguen activas aun con movimiento reducido.
+         En ese modo se elimina la flotacion corporal, pero los ojos, la boca y
+         el parpadeo continúan para que Credis no quede congelado en escritorio. */
       clearTimeout(state.faceTimer);
 
       function step() {
@@ -289,7 +286,6 @@
     }
 
     function blinkLoop() {
-      if (reducedMotion) return;
       clearTimeout(state.blinkTimer);
       state.blinkTimer = setTimeout(function () {
         if (!state.dragging && !state.panelOpen) {
