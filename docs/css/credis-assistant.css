@@ -15,8 +15,8 @@
   position: fixed;
   left: 0;
   top: 0;
-  width: 49px;
-  height: 49px;
+  width: 46px;
+  height: 46px;
   padding: 0;
   border: 0;
   background: transparent;
@@ -75,7 +75,7 @@
 .credis-fullimg {
   position: absolute;
   inset: 0;
-  width: 49px;
+  width: 46px;
   height: auto;
   margin: auto;
   display: block;
@@ -114,6 +114,9 @@
   transform-origin: center;
   transition: transform .22s ease;
 }
+.credis-mouth-patch {
+  fill: url(#credisMouthPatch);
+}
 .credis-smile-live {
   fill: none;
   stroke: #0f2040;
@@ -123,16 +126,7 @@
   transform-origin: center;
   transition: transform .25s ease;
 }
-.credis-smile-arrow {
-  fill: none;
-  stroke: #0f2040;
-  stroke-width: 9;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transform-box: fill-box;
-  transform-origin: center;
-  transition: transform .25s ease;
-}
+
 
 .credis-eye-live {
   transform-box: fill-box;
@@ -166,18 +160,14 @@
   transform: translateY(2px) rotate(5deg);
 }
 .credis-mascot.is-grinning .credis-smile-live,
-.credis-mascot.is-grinning .credis-smile-arrow {
-  transform: scaleX(1.08) scaleY(1.06) translateY(-1px);
-}
+.credis-mascot.is-grinning 
 .credis-mascot.is-winking .credis-smile-live,
-.credis-mascot.is-winking .credis-smile-arrow {
-  transform: rotate(-3deg) scaleX(1.05);
-}
+.credis-mascot.is-winking 
 
 /* Cuando se "esconde", usamos la misma mascota y la desplazamos fuera del viewport.
    Así la mitad visible conserva exactamente la cara y la media sonrisa. */
-.credis-mascot.is-peeking.side-right { transform: translateX(27px); }
-.credis-mascot.is-peeking.side-left  { transform: translateX(-27px); }
+.credis-mascot.is-peeking.side-right { transform: translateX(23px); }
+.credis-mascot.is-peeking.side-left  { transform: translateX(-23px); }
 
 .credis-speech {
   position: absolute;
@@ -440,12 +430,12 @@
 
 @media (max-width: 640px) {
   .credis-mascot {
-    width: 47px;
-    height: 47px;
+    width: 44px;
+    height: 44px;
   }
-  .credis-fullimg { width: 47px; }
-  .credis-mascot.is-peeking.side-right { transform: translateX(26px); }
-  .credis-mascot.is-peeking.side-left  { transform: translateX(-26px); }
+  .credis-fullimg { width: 44px; }
+  .credis-mascot.is-peeking.side-right { transform: translateX(22px); }
+  .credis-mascot.is-peeking.side-left  { transform: translateX(-22px); }
   .credis-panel {
     left: 10px;
     right: 10px;

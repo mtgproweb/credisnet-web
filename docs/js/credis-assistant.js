@@ -17,14 +17,20 @@
   function liveFaceSVG() {
     return '' +
       '<svg class="credis-liveface" viewBox="0 0 256 249" aria-hidden="true" focusable="false">' +
+        '<defs>' +
+          '<linearGradient id="credisMouthPatch" x1="0" y1="0" x2="0" y2="1">' +
+            '<stop offset="0" stop-color="#08df73"/>' +
+            '<stop offset=".52" stop-color="#05d86a"/>' +
+            '<stop offset="1" stop-color="#03c95f"/>' +
+          '</linearGradient>' +
+        '</defs>' +
         '<g class="credis-eye-covers">' +
           '<ellipse class="credis-eye-cover" cx="99" cy="116" rx="22" ry="29"/>' +
           '<ellipse class="credis-eye-cover" cx="160" cy="116" rx="22" ry="29"/>' +
         '</g>' +
-
+        '<ellipse class="credis-mouth-patch" cx="132" cy="155" rx="55" ry="27"/>' +
         '<path class="credis-brow-live brow-left" d="M84 88 Q99 75 113 87"/>' +
         '<path class="credis-brow-live brow-right" d="M145 86 Q161 75 176 90"/>' +
-
         '<g class="credis-eye-live eye-left">' +
           '<ellipse class="credis-eye-white" cx="99" cy="116" rx="17" ry="23"/>' +
           '<g class="credis-pupil-group pupil-left">' +
@@ -39,12 +45,9 @@
             '<circle class="credis-pupil-shine" cx="157.8" cy="115.5" r="3.3"/>' +
           '</g>' +
         '</g>' +
-
         '<path class="credis-lid lid-left" d="M84 116 Q99 127 114 116"/>' +
         '<path class="credis-lid lid-right" d="M145 116 Q160 127 176 116"/>' +
-
-        '<path class="credis-smile-live" d="M88 150 Q129 184 174 147"/>' +
-        '<path class="credis-smile-arrow" d="M167 144 L181 141 L176 155"/>' +
+        '<path class="credis-smile-live" d="M91 148 Q131 178 173 148"/>' +
       '</svg>';
   }
 
@@ -127,9 +130,7 @@
       peekTimer: null,
       wakeTimer: null,
       blinkTimer: null,
-      gestureTimer: null,
-      lastPointerX: null,
-      lastPointerY: null
+      gestureTimer: null
     };
 
     function viewport() {
@@ -177,8 +178,8 @@
 
     function positionFromState(animate) {
       var vp = viewport();
-      var size = mascot.offsetHeight || 49;
-      var width = mascot.offsetWidth || 49;
+      var size = mascot.offsetHeight || 46;
+      var width = mascot.offsetWidth || 46;
       var minY = topSafe();
       var maxY = Math.max(minY, vp.h - size - bottomSafe());
       var y = clamp(state.topRatio * vp.h, minY, maxY);
@@ -198,8 +199,8 @@
 
     function snapToEdge(x, y, animate) {
       var vp = viewport();
-      var width = mascot.offsetWidth || 49;
-      var height = mascot.offsetHeight || 49;
+      var width = mascot.offsetWidth || 46;
+      var height = mascot.offsetHeight || 46;
       state.side = (x + width / 2) < vp.w / 2 ? 'left' : 'right';
 
       var minY = topSafe();
@@ -221,33 +222,18 @@
     function setLook(dx, dy) {
       if (!pupilLeft || !pupilRight) return;
       dx = clamp(dx, -5.2, 5.2);
-      dy = clamp(dy, -4.0, 4.0);
+      dy = clamp(dy, -3.5, 3.5);
       var t = 'translate(' + dx.toFixed(2) + ' ' + dy.toFixed(2) + ')';
       pupilLeft.setAttribute('transform', t);
       pupilRight.setAttribute('transform', t);
     }
 
-    function lookAtPointer(clientX, clientY) {
-      if (state.dragging || state.panelOpen) return;
-      var rect = mascot.getBoundingClientRect();
-      var cx = rect.left + rect.width / 2;
-      var cy = rect.top + rect.height / 2;
-      var vx = clientX - cx;
-      var vy = clientY - cy;
-      var dist = Math.sqrt(vx * vx + vy * vy);
-
-      if (dist < 900) {
-        setLook(
-          clamp(vx / 52, -5.2, 5.2),
-          clamp(vy / 70, -4.0, 4.0)
-        );
-      } else {
-        setLook(0, 0);
-      }
-    }
-
-    function lookFront() {
-      setLook(0, 0);
+    function lookFront() { setLook(0, 0); }
+    function lookLeft() { setLook(-4.5, -0.25); }
+    function lookRight() { setLook(4.5, -0.25); }
+    function lookInward() {
+      if (state.side === 'right') lookLeft();
+      else lookRight();
     }
 
     function hideSpeech() {
@@ -288,7 +274,8 @@
         hideSpeech();
         mascot.classList.remove('is-curious', 'is-nodding', 'is-winking', 'is-grinning');
         mascot.classList.add('is-peeking');
-      }, reducedMotion ? 9000 : 5400);
+        lookInward();
+      }, reducedMotion ? 5000 : 3000);
     }
 
     function wakeUp() {
@@ -304,6 +291,7 @@
         }, 460);
       }
 
+      lookFront();
       schedulePeek();
     }
 
@@ -326,41 +314,45 @@
       if (reducedMotion) return;
       clearTimeout(state.gestureTimer);
 
-      state.gestureTimer = setTimeout(function () {
-        if (
-          !state.dragging &&
-          !state.panelOpen &&
-          !document.hidden &&
-          !mascot.classList.contains('is-peeking')
-        ) {
-          var gestures = ['curious', 'nod', 'wink', 'grin'];
-          var g = gestures[Math.floor(Math.random() * gestures.length)];
+      var sequence = [
+        { look: 'front', hold: 900 },
+        { look: 'left',  hold: 850 },
+        { look: 'front', hold: 600 },
+        { look: 'right', hold: 900 },
+        { look: 'front', hold: 750 }
+      ];
+      var i = 0;
 
-          if (g === 'curious') {
-            mascot.classList.add('is-curious');
-            setTimeout(function () {
-              mascot.classList.remove('is-curious');
-            }, 760);
-          } else if (g === 'nod') {
-            mascot.classList.add('is-nodding');
-            setTimeout(function () {
-              mascot.classList.remove('is-nodding');
-            }, 760);
-          } else if (g === 'wink') {
-            mascot.classList.add('is-winking');
-            setTimeout(function () {
-              mascot.classList.remove('is-winking');
-            }, 520);
-          } else {
-            mascot.classList.add('is-grinning');
-            setTimeout(function () {
-              mascot.classList.remove('is-grinning');
-            }, 820);
-          }
+      function step() {
+        if (state.dragging || state.panelOpen || document.hidden || mascot.classList.contains('is-peeking')) {
+          state.gestureTimer = setTimeout(step, 700);
+          return;
         }
 
-        gestureLoop();
-      }, 5000 + Math.random() * 6500);
+        var item = sequence[i % sequence.length];
+        if (item.look === 'left') lookLeft();
+        else if (item.look === 'right') lookRight();
+        else lookFront();
+
+        /* Cada vuelta completa suma un gesto breve para evitar aspecto robótico. */
+        if (i % sequence.length === 2) {
+          mascot.classList.add('is-curious');
+          setTimeout(function () { mascot.classList.remove('is-curious'); }, 520);
+        }
+        if (i % (sequence.length * 2) === 6) {
+          mascot.classList.add('is-winking');
+          setTimeout(function () { mascot.classList.remove('is-winking'); }, 430);
+        }
+        if (i % (sequence.length * 3) === 10) {
+          mascot.classList.add('is-nodding');
+          setTimeout(function () { mascot.classList.remove('is-nodding'); }, 620);
+        }
+
+        i += 1;
+        state.gestureTimer = setTimeout(step, item.hold);
+      }
+
+      state.gestureTimer = setTimeout(step, 650);
     }
 
     function openPanel() {
@@ -471,8 +463,8 @@
       if (!state.moved) return;
 
       var vp = viewport();
-      var width = mascot.offsetWidth || 49;
-      var height = mascot.offsetHeight || 49;
+      var width = mascot.offsetWidth || 46;
+      var height = mascot.offsetHeight || 46;
 
       mascot.style.left = clamp(state.startLeft + dx, 0, vp.w - width) + 'px';
       mascot.style.top = clamp(
@@ -480,11 +472,7 @@
         topSafe(),
         vp.h - height - bottomSafe()
       ) + 'px';
-
-      setLook(
-        clamp(dx / 8, -5.2, 5.2),
-        clamp(dy / 10, -4.0, 4.0)
-      );
+      lookFront();
     });
 
     function endDrag(e) {
@@ -518,18 +506,7 @@
     function wakeOnActivity(e) {
       if (state.dragging || state.panelOpen || document.hidden) return;
       if (e && e.pointerType === 'touch' && e.type === 'pointermove') return;
-
       wakeUp();
-
-      if (
-        e &&
-        typeof e.clientX === 'number' &&
-        typeof e.clientY === 'number'
-      ) {
-        state.lastPointerX = e.clientX;
-        state.lastPointerY = e.clientY;
-        lookAtPointer(e.clientX, e.clientY);
-      }
     }
 
     document.addEventListener('pointermove', wakeOnActivity, { passive: true });
