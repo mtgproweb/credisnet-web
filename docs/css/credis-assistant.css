@@ -99,8 +99,13 @@
 .credis-pupil { fill: #07152d; }
 .credis-pupil-shine { fill: #fff; }
 .credis-pupil-group {
-  transition: transform .28s cubic-bezier(.2,.8,.2,1);
+  transition: transform .38s cubic-bezier(.2,.8,.2,1);
 }
+
+/* Gestos corporales muy sutiles, como el personaje de Binance. */
+.credis-mascot.pose-left .credis-figure { transform: rotate(-4deg) translateX(-1px); }
+.credis-mascot.pose-right .credis-figure { transform: rotate(4deg) translateX(1px); }
+.credis-mascot.pose-happy .credis-figure { transform: translateY(-1px) scale(1.035); }
 .credis-brow-live {
   fill: none;
   stroke: #0f2040;
@@ -130,6 +135,10 @@
 .credis-mascot.mouth-big .credis-mouth { opacity: 0; }
 .credis-mascot.mouth-big .mouth-big { opacity: 1; }
 
+.credis-mascot.mouth-neutral .mouth-neutral { transform: scaleX(.88) translateY(2px); }
+.credis-mascot.mouth-soft .mouth-soft { transform: scaleX(.98) scaleY(.88); }
+.credis-mascot.mouth-big .mouth-big { transform: scaleX(1.08) scaleY(1.08) translateY(-1px); }
+
 .credis-eye-live {
   transform-box: fill-box;
   transform-origin: center;
@@ -145,10 +154,10 @@
 .credis-mascot.is-blinking .credis-eye-live { transform: scaleY(.10); }
 .credis-mascot.is-blinking .credis-lid { opacity: 1; }
 
-.credis-mascot.look-left .brow-left { transform: translateY(1px) rotate(-3deg); }
-.credis-mascot.look-left .brow-right { transform: translateY(-1px) rotate(-2deg); }
-.credis-mascot.look-right .brow-left { transform: translateY(-1px) rotate(2deg); }
-.credis-mascot.look-right .brow-right { transform: translateY(1px) rotate(3deg); }
+.credis-mascot.look-left .brow-left { transform: translateY(2px) rotate(-7deg); }
+.credis-mascot.look-left .brow-right { transform: translateY(-2px) rotate(-4deg); }
+.credis-mascot.look-right .brow-left { transform: translateY(-2px) rotate(4deg); }
+.credis-mascot.look-right .brow-right { transform: translateY(2px) rotate(7deg); }
 .credis-mascot.is-curious .brow-left { transform: translateY(-2px) rotate(-6deg); }
 .credis-mascot.is-curious .brow-right { transform: translateY(2px) rotate(5deg); }
 

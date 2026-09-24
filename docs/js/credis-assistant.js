@@ -2,7 +2,7 @@
   'use strict';
 
   var WHATSAPP_URL = 'https://wa.me/541122845514?text=%C2%A1Hola!%20Vi%20la%20Web%20sobre%20pr%C3%A9stamos%20y%20me%20gustar%C3%ADa%20obtener%20m%C3%A1s%20informaci%C3%B3n.%20%C2%A1Muchas%20Gracias!';
-  var STORAGE_KEY = 'credis-mascot-position-v5';
+  var STORAGE_KEY = 'credis-mascot-position-v6';
   var IDLE_HIDE_MS = 3000;
   var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var scriptEl = document.currentScript || (function () {
@@ -201,9 +201,10 @@
 
     function setLook(direction) {
       var dx = 0;
-      if (direction === 'left') dx = -4.6;
-      if (direction === 'right') dx = 4.6;
-      var t = 'translate(' + dx + ' -0.2)';
+      if (direction === 'left') dx = -14;
+      if (direction === 'right') dx = 14;
+      var dy = direction === 'front' ? 0 : -1.2;
+      var t = 'translate(' + dx + ' ' + dy + ')';
       pupilLeft.setAttribute('transform', t);
       pupilRight.setAttribute('transform', t);
       mascot.classList.remove('look-left', 'look-right', 'look-front');
@@ -238,14 +239,16 @@
     /* Vida propia: no depende de la posición del mouse. Mientras Credis esté visible,
        alterna mirada y sonrisa en un ciclo suave. */
     var faceSequence = [
-      { look: 'front', mouth: 'soft', hold: 720 },
-      { look: 'left',  mouth: 'soft', hold: 760 },
-      { look: 'front', mouth: 'neutral', hold: 430 },
-      { look: 'front', mouth: 'big', hold: 900, curious: true },
-      { look: 'right', mouth: 'big', hold: 760 },
-      { look: 'front', mouth: 'soft', hold: 780 },
-      { look: 'left',  mouth: 'neutral', hold: 420 },
-      { look: 'front', mouth: 'big', hold: 850 }
+      { look: 'front', mouth: 'soft',    hold: 850 },
+      { look: 'left',  mouth: 'soft',    hold: 900, pose: 'lean-left' },
+      { look: 'front', mouth: 'neutral', hold: 520 },
+      { look: 'front', mouth: 'big',     hold: 1050, pose: 'happy' },
+      { look: 'right', mouth: 'soft',    hold: 900, pose: 'lean-right' },
+      { look: 'front', mouth: 'soft',    hold: 760 },
+      { look: 'left',  mouth: 'big',     hold: 820, pose: 'lean-left' },
+      { look: 'front', mouth: 'neutral', hold: 460 },
+      { look: 'right', mouth: 'big',     hold: 820, pose: 'lean-right' },
+      { look: 'front', mouth: 'soft',    hold: 900 }
     ];
 
     function faceLoop() {
@@ -268,12 +271,15 @@
         setLook(item.look);
         setMouth(item.mouth);
 
-        if (item.curious) {
-          mascot.classList.add('is-curious');
-          setTimeout(function () { mascot.classList.remove('is-curious'); }, 600);
-        }
+        mascot.classList.remove('pose-left', 'pose-right', 'pose-happy');
+        if (item.pose === 'lean-left') mascot.classList.add('pose-left');
+        if (item.pose === 'lean-right') mascot.classList.add('pose-right');
+        if (item.pose === 'happy') mascot.classList.add('pose-happy');
 
-        state.faceTimer = setTimeout(step, item.hold);
+        state.faceTimer = setTimeout(function () {
+          mascot.classList.remove('pose-left', 'pose-right', 'pose-happy');
+          step();
+        }, item.hold);
       }
 
       state.faceTimer = setTimeout(step, 500);
@@ -294,7 +300,7 @@
     function hideHalf() {
       if (state.dragging || state.panelOpen || document.hidden) return;
       hideSpeech();
-      mascot.classList.remove('is-curious');
+      mascot.classList.remove('is-curious', 'pose-left', 'pose-right', 'pose-happy');
       mascot.classList.add('is-peeking');
       lookInward();
       setMouth('soft');
