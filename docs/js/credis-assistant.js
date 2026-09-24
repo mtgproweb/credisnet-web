@@ -2,7 +2,8 @@
   'use strict';
 
   var WHATSAPP_URL = 'https://wa.me/541122845514?text=%C2%A1Hola!%20Vi%20la%20Web%20sobre%20pr%C3%A9stamos%20y%20me%20gustar%C3%ADa%20obtener%20m%C3%A1s%20informaci%C3%B3n.%20%C2%A1Muchas%20Gracias!';
-  var STORAGE_KEY = 'credis-mascot-position-v3';
+  var STORAGE_KEY = 'credis-mascot-position-v5';
+  var IDLE_HIDE_MS = 3000;
   var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var scriptEl = document.currentScript || (function () {
     var s = document.getElementsByTagName('script');
@@ -47,7 +48,9 @@
         '</g>' +
         '<path class="credis-lid lid-left" d="M84 116 Q99 127 114 116"/>' +
         '<path class="credis-lid lid-right" d="M145 116 Q160 127 176 116"/>' +
-        '<path class="credis-smile-live" d="M91 148 Q131 178 173 148"/>' +
+        '<path class="credis-mouth mouth-neutral" d="M96 151 Q132 152 168 151"/>' +
+        '<path class="credis-mouth mouth-soft" d="M94 148 Q132 166 170 148"/>' +
+        '<path class="credis-mouth mouth-big" d="M91 145 Q132 181 173 145"/>' +
       '</svg>';
   }
 
@@ -58,7 +61,7 @@
     root.id = 'credis-assistant';
     root.className = 'side-right';
     root.innerHTML =
-      '<button class="credis-mascot side-right" type="button" aria-label="Abrir a Credis, asistente de Credisnet" aria-haspopup="dialog" aria-expanded="false">' +
+      '<button class="credis-mascot side-right mouth-soft look-front" type="button" aria-label="Abrir a Credis, asistente de Credisnet" aria-haspopup="dialog" aria-expanded="false">' +
         '<span class="credis-figure">' +
           '<img class="credis-fullimg" src="' + FULL_IMG + '" alt="" aria-hidden="true">' +
           liveFaceSVG() +
@@ -127,42 +130,27 @@
       startTop: 0,
       panelOpen: false,
       bubbleTimer: null,
-      peekTimer: null,
-      wakeTimer: null,
+      idleTimer: null,
       blinkTimer: null,
-      gestureTimer: null
+      faceTimer: null,
+      faceIndex: 0
     };
 
-    function viewport() {
-      return { w: window.innerWidth, h: window.innerHeight };
-    }
-    function clamp(v, min, max) {
-      return Math.max(min, Math.min(max, v));
-    }
-    function bottomSafe() {
-      return document.getElementById('wa-float') ? 92 : 22;
-    }
-    function topSafe() {
-      return window.innerWidth <= 640 ? 76 : 90;
-    }
+    function viewport() { return { w: window.innerWidth, h: window.innerHeight }; }
+    function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+    function bottomSafe() { return document.getElementById('wa-float') ? 92 : 22; }
+    function topSafe() { return window.innerWidth <= 640 ? 76 : 90; }
 
     function savePosition() {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          side: state.side,
-          topRatio: state.topRatio
-        }));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ side: state.side, topRatio: state.topRatio }));
       } catch (e) {}
     }
 
     function loadPosition() {
       try {
         var saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-        if (
-          saved &&
-          (saved.side === 'left' || saved.side === 'right') &&
-          typeof saved.topRatio === 'number'
-        ) {
+        if (saved && (saved.side === 'left' || saved.side === 'right') && typeof saved.topRatio === 'number') {
           state.side = saved.side;
           state.topRatio = clamp(saved.topRatio, 0.15, 0.84);
         }
@@ -190,11 +178,7 @@
       mascot.style.top = y + 'px';
       setSideClass();
 
-      if (!animate) {
-        requestAnimationFrame(function () {
-          mascot.style.transition = '';
-        });
-      }
+      if (!animate) requestAnimationFrame(function () { mascot.style.transition = ''; });
     }
 
     function snapToEdge(x, y, animate) {
@@ -202,7 +186,6 @@
       var width = mascot.offsetWidth || 46;
       var height = mascot.offsetHeight || 46;
       state.side = (x + width / 2) < vp.w / 2 ? 'left' : 'right';
-
       var minY = topSafe();
       var maxY = Math.max(minY, vp.h - height - bottomSafe());
       var clampedY = clamp(y, minY, maxY);
@@ -210,169 +193,150 @@
 
       savePosition();
       positionFromState(animate !== false);
-
-      mascot.classList.add('is-happy', 'is-grinning');
-      setTimeout(function () {
-        mascot.classList.remove('is-happy', 'is-grinning');
-      }, 650);
-
-      wakeUp();
+      mascot.classList.add('is-happy');
+      setMouth('big');
+      setTimeout(function () { mascot.classList.remove('is-happy'); }, 620);
+      registerActivity();
     }
 
-    function setLook(dx, dy) {
-      if (!pupilLeft || !pupilRight) return;
-      dx = clamp(dx, -5.2, 5.2);
-      dy = clamp(dy, -3.5, 3.5);
-      var t = 'translate(' + dx.toFixed(2) + ' ' + dy.toFixed(2) + ')';
+    function setLook(direction) {
+      var dx = 0;
+      if (direction === 'left') dx = -4.6;
+      if (direction === 'right') dx = 4.6;
+      var t = 'translate(' + dx + ' -0.2)';
       pupilLeft.setAttribute('transform', t);
       pupilRight.setAttribute('transform', t);
+      mascot.classList.remove('look-left', 'look-right', 'look-front');
+      mascot.classList.add('look-' + direction);
     }
 
-    function lookFront() { setLook(0, 0); }
-    function lookLeft() { setLook(-4.5, -0.25); }
-    function lookRight() { setLook(4.5, -0.25); }
     function lookInward() {
-      if (state.side === 'right') lookLeft();
-      else lookRight();
+      setLook(state.side === 'right' ? 'left' : 'right');
     }
 
-    function hideSpeech() {
-      speech.classList.remove('is-visible');
+    function setMouth(kind) {
+      mascot.classList.remove('mouth-neutral', 'mouth-soft', 'mouth-big');
+      mascot.classList.add('mouth-' + kind);
     }
 
-    var messages = [
-      '¡Hola! 👋',
-      '¿Necesitás una mano?',
-      'Estoy por acá 😄',
-      '¿Querés consultar tu disponible? 👀'
-    ];
+    function hideSpeech() { speech.classList.remove('is-visible'); }
 
+    var messages = ['¡Hola! 👋', '¿Necesitás una mano?', 'Estoy por acá 😄', '¿Querés consultar tu disponible? 👀'];
     function speechLoop(first) {
       if (reducedMotion) return;
       clearTimeout(state.bubbleTimer);
-
       state.bubbleTimer = setTimeout(function () {
-        if (
-          !state.dragging &&
-          !state.panelOpen &&
-          !document.hidden &&
-          !mascot.classList.contains('is-peeking')
-        ) {
+        if (!state.dragging && !state.panelOpen && !document.hidden && !mascot.classList.contains('is-peeking')) {
           speech.textContent = messages[Math.floor(Math.random() * messages.length)];
           speech.classList.add('is-visible');
-          setTimeout(hideSpeech, 3300);
+          setTimeout(hideSpeech, 3200);
         }
         speechLoop(false);
-      }, first ? 9000 : 17000 + Math.random() * 13000);
+      }, first ? 10000 : 18000 + Math.random() * 14000);
     }
 
-    function schedulePeek() {
-      clearTimeout(state.peekTimer);
-      if (state.dragging || state.panelOpen || document.hidden) return;
+    /* Vida propia: no depende de la posición del mouse. Mientras Credis esté visible,
+       alterna mirada y sonrisa en un ciclo suave. */
+    var faceSequence = [
+      { look: 'front', mouth: 'soft', hold: 720 },
+      { look: 'left',  mouth: 'soft', hold: 760 },
+      { look: 'front', mouth: 'neutral', hold: 430 },
+      { look: 'front', mouth: 'big', hold: 900, curious: true },
+      { look: 'right', mouth: 'big', hold: 760 },
+      { look: 'front', mouth: 'soft', hold: 780 },
+      { look: 'left',  mouth: 'neutral', hold: 420 },
+      { look: 'front', mouth: 'big', hold: 850 }
+    ];
 
-      state.peekTimer = setTimeout(function () {
-        hideSpeech();
-        mascot.classList.remove('is-curious', 'is-nodding', 'is-winking', 'is-grinning');
-        mascot.classList.add('is-peeking');
-        lookInward();
-      }, reducedMotion ? 5000 : 3000);
-    }
-
-    function wakeUp() {
-      clearTimeout(state.peekTimer);
-
-      if (mascot.classList.contains('is-peeking')) {
-        mascot.classList.remove('is-peeking');
-        mascot.classList.add('is-waking');
-
-        clearTimeout(state.wakeTimer);
-        state.wakeTimer = setTimeout(function () {
-          mascot.classList.remove('is-waking');
-        }, 460);
+    function faceLoop() {
+      if (reducedMotion) {
+        setLook('front');
+        setMouth('soft');
+        return;
       }
 
-      lookFront();
-      schedulePeek();
+      clearTimeout(state.faceTimer);
+
+      function step() {
+        if (state.dragging || state.panelOpen || document.hidden || mascot.classList.contains('is-peeking')) {
+          state.faceTimer = setTimeout(step, 350);
+          return;
+        }
+
+        var item = faceSequence[state.faceIndex % faceSequence.length];
+        state.faceIndex += 1;
+        setLook(item.look);
+        setMouth(item.mouth);
+
+        if (item.curious) {
+          mascot.classList.add('is-curious');
+          setTimeout(function () { mascot.classList.remove('is-curious'); }, 600);
+        }
+
+        state.faceTimer = setTimeout(step, item.hold);
+      }
+
+      state.faceTimer = setTimeout(step, 500);
     }
 
     function blinkLoop() {
       if (reducedMotion) return;
       clearTimeout(state.blinkTimer);
-
       state.blinkTimer = setTimeout(function () {
         if (!state.dragging && !state.panelOpen) {
           mascot.classList.add('is-blinking');
-          setTimeout(function () {
-            mascot.classList.remove('is-blinking');
-          }, 120);
+          setTimeout(function () { mascot.classList.remove('is-blinking'); }, 120);
         }
         blinkLoop();
-      }, 2600 + Math.random() * 4200);
+      }, 2800 + Math.random() * 3600);
     }
 
-    function gestureLoop() {
-      if (reducedMotion) return;
-      clearTimeout(state.gestureTimer);
+    function hideHalf() {
+      if (state.dragging || state.panelOpen || document.hidden) return;
+      hideSpeech();
+      mascot.classList.remove('is-curious');
+      mascot.classList.add('is-peeking');
+      lookInward();
+      setMouth('soft');
+    }
 
-      var sequence = [
-        { look: 'front', hold: 900 },
-        { look: 'left',  hold: 850 },
-        { look: 'front', hold: 600 },
-        { look: 'right', hold: 900 },
-        { look: 'front', hold: 750 }
-      ];
-      var i = 0;
+    function scheduleIdleHide() {
+      clearTimeout(state.idleTimer);
+      if (state.dragging || state.panelOpen || document.hidden) return;
+      state.idleTimer = setTimeout(hideHalf, IDLE_HIDE_MS);
+    }
 
-      function step() {
-        if (state.dragging || state.panelOpen || document.hidden || mascot.classList.contains('is-peeking')) {
-          state.gestureTimer = setTimeout(step, 700);
-          return;
-        }
-
-        var item = sequence[i % sequence.length];
-        if (item.look === 'left') lookLeft();
-        else if (item.look === 'right') lookRight();
-        else lookFront();
-
-        /* Cada vuelta completa suma un gesto breve para evitar aspecto robótico. */
-        if (i % sequence.length === 2) {
-          mascot.classList.add('is-curious');
-          setTimeout(function () { mascot.classList.remove('is-curious'); }, 520);
-        }
-        if (i % (sequence.length * 2) === 6) {
-          mascot.classList.add('is-winking');
-          setTimeout(function () { mascot.classList.remove('is-winking'); }, 430);
-        }
-        if (i % (sequence.length * 3) === 10) {
-          mascot.classList.add('is-nodding');
-          setTimeout(function () { mascot.classList.remove('is-nodding'); }, 620);
-        }
-
-        i += 1;
-        state.gestureTimer = setTimeout(step, item.hold);
+    function wakeUp() {
+      if (mascot.classList.contains('is-peeking')) {
+        mascot.classList.remove('is-peeking');
+        mascot.classList.add('is-waking');
+        setLook('front');
+        setMouth('soft');
+        setTimeout(function () { mascot.classList.remove('is-waking'); }, 440);
       }
+    }
 
-      state.gestureTimer = setTimeout(step, 650);
+    /* Cualquier actividad real mantiene a Credis visible. El ciclo facial NO sigue al cursor;
+       simplemente continúa con su animación predefinida. */
+    function registerActivity() {
+      if (state.dragging || state.panelOpen || document.hidden) return;
+      wakeUp();
+      scheduleIdleHide();
     }
 
     function openPanel() {
+      clearTimeout(state.idleTimer);
       hideSpeech();
       mascot.classList.remove('is-peeking');
       state.panelOpen = true;
       root.classList.add('is-open');
       panel.setAttribute('aria-hidden', 'false');
       mascot.setAttribute('aria-expanded', 'true');
-
-      mascot.classList.add('is-happy', 'is-grinning');
-      lookFront();
-
-      setTimeout(function () {
-        mascot.classList.remove('is-happy', 'is-grinning');
-      }, 650);
-
-      setTimeout(function () {
-        closeBtn.focus({ preventScroll: true });
-      }, 80);
+      setLook('front');
+      setMouth('big');
+      mascot.classList.add('is-happy');
+      setTimeout(function () { mascot.classList.remove('is-happy'); }, 620);
+      setTimeout(function () { closeBtn.focus({ preventScroll: true }); }, 80);
     }
 
     function closePanel(returnFocus) {
@@ -380,24 +344,17 @@
       root.classList.remove('is-open');
       panel.setAttribute('aria-hidden', 'true');
       mascot.setAttribute('aria-expanded', 'false');
-
-      if (returnFocus !== false) {
-        mascot.focus({ preventScroll: true });
-      }
-
-      schedulePeek();
+      setLook('front');
+      setMouth('soft');
+      if (returnFocus !== false) mascot.focus({ preventScroll: true });
+      scheduleIdleHide();
     }
 
     optionButtons.forEach(function (btn) {
       btn.addEventListener('click', function () {
         var answer = answers[this.getAttribute('data-key')];
         if (!answer) return;
-
-        mascot.classList.add('is-grinning');
-        setTimeout(function () {
-          mascot.classList.remove('is-grinning');
-        }, 750);
-
+        setMouth('big');
         answerTitle.textContent = answer.title;
         answerText.textContent = answer.text;
         answerBox.classList.add('is-visible');
@@ -406,34 +363,22 @@
 
     waButtons.forEach(function (link) {
       link.addEventListener('click', function () {
-        setTimeout(function () {
-          closePanel(false);
-        }, 80);
+        setTimeout(function () { closePanel(false); }, 80);
       });
     });
 
-    closeBtn.addEventListener('click', function () {
-      closePanel(true);
-    });
-
-    backdrop.addEventListener('click', function () {
-      closePanel(true);
-    });
-
+    closeBtn.addEventListener('click', function () { closePanel(true); });
+    backdrop.addEventListener('click', function () { closePanel(true); });
     document.addEventListener('keydown', function (e) {
-      if (state.panelOpen && e.key === 'Escape') {
-        closePanel(true);
-      } else if (!state.panelOpen) {
-        wakeUp();
-      }
+      if (state.panelOpen && e.key === 'Escape') closePanel(true);
+      else if (!state.panelOpen) registerActivity();
     });
 
     mascot.addEventListener('pointerdown', function (e) {
       if (state.panelOpen) return;
-
       hideSpeech();
       wakeUp();
-
+      clearTimeout(state.idleTimer);
       state.dragging = true;
       state.moved = false;
       state.pointerId = e.pointerId;
@@ -441,97 +386,71 @@
       state.startY = e.clientY;
       state.startLeft = parseFloat(mascot.style.left) || mascot.getBoundingClientRect().left;
       state.startTop = parseFloat(mascot.style.top) || mascot.getBoundingClientRect().top;
-
       mascot.classList.add('is-dragging');
       mascot.classList.remove('is-peeking');
-
-      try {
-        mascot.setPointerCapture(e.pointerId);
-      } catch (err) {}
+      try { mascot.setPointerCapture(e.pointerId); } catch (err) {}
     });
 
     mascot.addEventListener('pointermove', function (e) {
       if (!state.dragging || e.pointerId !== state.pointerId) return;
-
       var dx = e.clientX - state.startX;
       var dy = e.clientY - state.startY;
-
-      if (Math.abs(dx) + Math.abs(dy) > 7) {
-        state.moved = true;
-      }
-
+      if (Math.abs(dx) + Math.abs(dy) > 7) state.moved = true;
       if (!state.moved) return;
-
       var vp = viewport();
       var width = mascot.offsetWidth || 46;
       var height = mascot.offsetHeight || 46;
-
       mascot.style.left = clamp(state.startLeft + dx, 0, vp.w - width) + 'px';
-      mascot.style.top = clamp(
-        state.startTop + dy,
-        topSafe(),
-        vp.h - height - bottomSafe()
-      ) + 'px';
-      lookFront();
+      mascot.style.top = clamp(state.startTop + dy, topSafe(), vp.h - height - bottomSafe()) + 'px';
     });
 
     function endDrag(e) {
-      if (
-        !state.dragging ||
-        (e.pointerId != null && e.pointerId !== state.pointerId)
-      ) return;
-
+      if (!state.dragging || (e.pointerId != null && e.pointerId !== state.pointerId)) return;
       state.dragging = false;
       mascot.classList.remove('is-dragging');
-
-      try {
-        mascot.releasePointerCapture(state.pointerId);
-      } catch (err) {}
-
+      try { mascot.releasePointerCapture(state.pointerId); } catch (err) {}
       var rect = mascot.getBoundingClientRect();
-
-      if (state.moved) {
-        snapToEdge(rect.left, rect.top, true);
-      } else {
-        openPanel();
-      }
-
+      if (state.moved) snapToEdge(rect.left, rect.top, true);
+      else openPanel();
       state.pointerId = null;
-      lookFront();
     }
 
     mascot.addEventListener('pointerup', endDrag);
     mascot.addEventListener('pointercancel', endDrag);
 
-    function wakeOnActivity(e) {
+    function activityHandler(e) {
       if (state.dragging || state.panelOpen || document.hidden) return;
       if (e && e.pointerType === 'touch' && e.type === 'pointermove') return;
-      wakeUp();
+      registerActivity();
     }
 
-    document.addEventListener('pointermove', wakeOnActivity, { passive: true });
-    document.addEventListener('mousemove', wakeOnActivity, { passive: true });
-    document.addEventListener('scroll', wakeOnActivity, { passive: true });
-    document.addEventListener('touchstart', wakeOnActivity, { passive: true });
-    document.addEventListener('click', wakeOnActivity, { passive: true });
+    document.addEventListener('pointermove', activityHandler, { passive: true });
+    document.addEventListener('mousemove', activityHandler, { passive: true });
+    document.addEventListener('scroll', activityHandler, { passive: true });
+    document.addEventListener('wheel', activityHandler, { passive: true });
+    document.addEventListener('touchstart', activityHandler, { passive: true });
+    document.addEventListener('touchmove', activityHandler, { passive: true });
+    document.addEventListener('click', activityHandler, { passive: true });
 
     document.addEventListener('visibilitychange', function () {
       if (!document.hidden && !state.panelOpen) {
-        wakeUp();
-        lookFront();
+        registerActivity();
       }
     });
 
     window.addEventListener('resize', function () {
       positionFromState(false);
+      registerActivity();
     });
 
     loadPosition();
     positionFromState(false);
+    setLook('front');
+    setMouth('soft');
     blinkLoop();
-    gestureLoop();
+    faceLoop();
     speechLoop(true);
-    schedulePeek();
+    scheduleIdleHide();
   }
 
   if (document.readyState === 'loading') {
