@@ -1,17 +1,54 @@
-document.addEventListener('DOMContentLoaded', function(){
+/* ==========================================================
+   MONTOS DEL CARRUSEL PRINCIPAL — CREDISNET
+   Se ejecuta al cargar main.js (ubicado al final del HTML), antes de
+   que el carrusel clone las tarjetas, para que no aparezca "Según línea".
+   ========================================================== */
+(function updateHeroLoanAmounts(){
+  var amounts = {
+    'prestamos-para-docentes-y-auxiliares/': '$10.000.000',
+    'prestamos-policia-provincia-buenos-aires/': '$6.000.000',
+    'prestamos-personal-salud/': '$6.000.000',
+    'prestamos-jubilados-pensionados-ips/': '$10.000.000',
+    'prestamos-ejercito-argentino/': '$20.000.000',
+    'prestamos-armada-argentina/': '$20.000.000',
+    'prestamos-fuerza-aerea-argentina/': '$20.000.000',
+    'prestamos-policia-federal/': '$20.000.000'
+  };
 
+  document.querySelectorAll('#carousel-track .hero-card').forEach(function(card){
+    var href = card.getAttribute('href') || '';
+    var amount = null;
+
+    Object.keys(amounts).some(function(path){
+      if (href.indexOf(path) !== -1) {
+        amount = amounts[path];
+        return true;
+      }
+      return false;
+    });
+
+    if (!amount) return;
+
+    var amountEl = card.querySelector('.card-amount');
+    var labels = card.querySelectorAll('.card-amount-label');
+    if (amountEl) amountEl.textContent = amount;
+    if (labels[0]) labels[0].textContent = 'Monto máximo';
+    if (labels[1]) labels[1].textContent = '· Hasta 36 cuotas';
+  });
+})();
+
+document.addEventListener('DOMContentLoaded', function(){
   /* HERO CAROUSEL INFINITO & DRAGGABLE (NATIVE SCROLL) */
   var track = document.getElementById('carousel-track');
   var btnPrev = document.getElementById('hero-nav-prev');
   var btnNext = document.getElementById('hero-nav-next');
-  
+
   if (track) {
     var items = Array.from(track.children);
-    
+
     // Clonar items para el loop infinito
     items.forEach(function(item) { var clone = item.cloneNode(true); track.appendChild(clone); });
     items.forEach(function(item) { var clone = item.cloneNode(true); track.appendChild(clone); });
-
     var itemWidth = 0;
     function centerCarousel() {
       itemWidth = items[0].offsetWidth + 16; // ancho + gap
@@ -23,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function(){
     window.addEventListener('resize', centerCarousel);
 
     var isDown = false, startX, scrollLeft, isDragging = false;
-
     // Logica táctil/mouse
     track.addEventListener('mousedown', function(e) {
       isDown = true; isDragging = false; track.classList.add('dragging');
@@ -36,72 +72,65 @@ document.addEventListener('DOMContentLoaded', function(){
       if (!isDown) return;
       e.preventDefault(); isDragging = true;
       var x = e.pageX - track.offsetLeft;
-      var walk = (x - startX) * 1.5; 
+      var walk = (x - startX) * 1.5;
       track.scrollLeft = scrollLeft - walk;
     });
-
     track.querySelectorAll('a').forEach(function(link) {
       link.addEventListener('click', function(e) { if (isDragging) e.preventDefault(); });
     });
-
     // Validar Loop infinito silencioso
     function checkLoop() {
       if(!itemWidth) itemWidth = items[0].offsetWidth + 16;
       var setWidth = itemWidth * items.length;
       var centerOffset = (track.clientWidth - items[0].offsetWidth) / 2;
-      
+
       // Limite derecho
       if (track.scrollLeft >= (setWidth * 2) - centerOffset - (itemWidth / 2)) {
         track.classList.add('no-smooth');
         track.scrollLeft -= setWidth;
-        void track.offsetWidth; 
+        void track.offsetWidth;
         track.classList.remove('no-smooth');
-      } 
+      }
       // Limite izquierdo
       else if (track.scrollLeft <= centerOffset + (itemWidth / 2)) {
         track.classList.add('no-smooth');
         track.scrollLeft += setWidth;
-        void track.offsetWidth; 
+        void track.offsetWidth;
         track.classList.remove('no-smooth');
       }
     }
-
     track.addEventListener('scroll', function() {
       if (!track.classList.contains('dragging')) {
         checkLoop();
       }
     });
-
     // Navegación con flechas
     function moveNext() { if(!itemWidth) itemWidth = items[0].offsetWidth + 16; track.scrollLeft += itemWidth; }
     function movePrev() { if(!itemWidth) itemWidth = items[0].offsetWidth + 16; track.scrollLeft -= itemWidth; }
-    
+
     if(btnNext) btnNext.addEventListener('click', function(){ moveNext(); pauseAutoplay(); resumeAutoplay(); });
     if(btnPrev) btnPrev.addEventListener('click', function(){ movePrev(); pauseAutoplay(); resumeAutoplay(); });
-
     // Autoplay nativo
     var autoPlayTimer;
     function startAutoplay() {
       autoPlayTimer = setInterval(function() {
         moveNext();
-      }, 5000); 
+      }, 5000);
     }
     function pauseAutoplay() { clearInterval(autoPlayTimer); }
     function resumeAutoplay() { pauseAutoplay(); startAutoplay(); }
-    
+
     startAutoplay();
-    
+
     track.addEventListener('touchstart', pauseAutoplay, {passive: true});
     track.addEventListener('touchend', resumeAutoplay, {passive: true});
   }
-
   /* TESTIMONIOS CAROUSEL */
   var tTrack = document.getElementById('testi-track');
   var tPrevB = document.getElementById('testi-prev');
   var tNextB = document.getElementById('testi-next');
   var tDots  = document.querySelectorAll('#testi-dots .testi-dot');
   var tCur   = 0, tAuto;
-
   if(tTrack){
     var tCards = tTrack.querySelectorAll('.testi-card');
     var tTotal = tCards.length;
@@ -122,7 +151,6 @@ document.addEventListener('DOMContentLoaded', function(){
     tStart();
     window.addEventListener('resize', function(){ tGoTo(tCur); });
   }
-
   /* CONTADORES */
   var counters = document.querySelectorAll('.counter');
   if(counters.length !== 0){
@@ -145,7 +173,6 @@ document.addEventListener('DOMContentLoaded', function(){
     }, {threshold:0.3});
     counters.forEach(function(c){ cObs.observe(c); });
   }
-
   /* SCROLL REVEAL */
   var revs = document.querySelectorAll('.reveal');
   if(revs.length !== 0){
@@ -154,11 +181,9 @@ document.addEventListener('DOMContentLoaded', function(){
     }, {threshold:0.08, rootMargin:'0px 0px -30px 0px'});
     revs.forEach(function(el){ rObs.observe(el); });
   }
-
   /* HEADER SCROLL */
   var hdr = document.getElementById('main-header');
   if(hdr){ window.addEventListener('scroll', function(){ hdr.style.boxShadow = Math.sign(window.scrollY - 80) === 1 ? '0 4px 30px rgba(0,0,0,0.5)' : '0 2px 20px rgba(0,0,0,0.3)'; }); }
-
   /* MOBILE NAV */
   var navTgl = document.getElementById('nav-toggle');
   var mobNav = document.getElementById('mobile-nav');
@@ -171,7 +196,6 @@ document.addEventListener('DOMContentLoaded', function(){
       document.body.style.overflow = isExpanded ? '' : 'hidden';
     });
   }
-
   /* SUBMENUS MOVILES */
   var mobSubToggles = document.querySelectorAll('.mob-submenu-toggle');
   mobSubToggles.forEach(function(toggle) {
@@ -186,17 +210,14 @@ document.addEventListener('DOMContentLoaded', function(){
       }
     });
   });
-
   /* WA STICKY BAR */
   var waBar = document.getElementById('wa-sticky-bar');
   if(waBar){ waBar.style.display = Math.sign(window.innerWidth - 600) === -1 ? 'block' : 'none'; }
-
   /* FAQ */
   document.querySelectorAll('.faq-item').forEach(function(item){
     var q = item.querySelector('.faq-q');
     if(q){ q.addEventListener('click', function(){ var open = item.classList.contains('open'); document.querySelectorAll('.faq-item').forEach(function(i){ i.classList.remove('open'); }); if(!open){ item.classList.add('open'); } }); }
   });
-
   /* SMOOTH SCROLL */
   document.querySelectorAll('a[href^="#"]').forEach(function(a){
     a.addEventListener('click', function(e){
@@ -206,3 +227,32 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 
 });
+
+/* CREDIS — mascota flotante global
+   Carga el asistente desde la misma base del sitio para funcionar tanto
+   en Cloudflare Pages como en la vista previa de GitHub Pages. */
+(function loadCredisAssistant(){
+  if (window.__credisAssistantLoader) return;
+  window.__credisAssistantLoader = true;
+
+  var scripts = Array.prototype.slice.call(document.scripts || []);
+  var mainScript = scripts.reverse().find(function(s){ return /\/js\/main\.js(?:\?|$)/.test(s.src || ''); });
+  var jsBase = mainScript && mainScript.src ? mainScript.src.replace(/main\.js(?:\?.*)?$/, '') : '/js/';
+  var siteBase = jsBase.replace(/js\/$/, '');
+
+  if (!document.querySelector('link[data-credis-assistant]')) {
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = siteBase + 'css/credis-assistant.css?v=20260924-final';
+    link.setAttribute('data-credis-assistant', 'style');
+    document.head.appendChild(link);
+  }
+
+  if (!document.querySelector('script[data-credis-assistant]')) {
+    var script = document.createElement('script');
+    script.src = jsBase + 'credis-assistant.js?v=20260924-final';
+    script.defer = true;
+    script.setAttribute('data-credis-assistant', 'script');
+    document.head.appendChild(script);
+  }
+})();
