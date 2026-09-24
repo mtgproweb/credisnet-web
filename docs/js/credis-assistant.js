@@ -1,16 +1,51 @@
-
 (function () {
   'use strict';
 
   var WHATSAPP_URL = 'https://wa.me/541122845514?text=%C2%A1Hola!%20Vi%20la%20Web%20sobre%20pr%C3%A9stamos%20y%20me%20gustar%C3%ADa%20obtener%20m%C3%A1s%20informaci%C3%B3n.%20%C2%A1Muchas%20Gracias!';
-  var STORAGE_KEY = 'credis-mascot-position-v2';
+  var STORAGE_KEY = 'credis-mascot-position-v3';
   var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var scriptEl = document.currentScript || (function(){ var s=document.getElementsByTagName('script'); return s[s.length-1]; })();
+  var scriptEl = document.currentScript || (function () {
+    var s = document.getElementsByTagName('script');
+    return s[s.length - 1];
+  })();
   var FULL_IMG = new URL('../img/credis/credis-full.png', scriptEl.src).href;
-  var PEEK_IMG = new URL('../img/credis/credis-peek.png', scriptEl.src).href;
 
   function whatsappIcon() {
     return '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M19.11 17.21c-.47-.24-2.79-1.38-3.22-1.54-.43-.16-.74-.24-1.06.24-.31.47-1.22 1.54-1.49 1.86-.27.31-.55.35-1.02.12-.47-.24-1.98-.73-3.77-2.33-1.39-1.24-2.33-2.78-2.6-3.25-.27-.47-.03-.73.21-.96.21-.21.47-.55.71-.82.24-.27.31-.47.47-.78.16-.31.08-.59-.04-.82-.12-.24-1.06-2.55-1.45-3.49-.38-.92-.77-.8-1.06-.81h-.9c-.31 0-.82.12-1.25.59-.43.47-1.65 1.61-1.65 3.92 0 2.31 1.69 4.55 1.92 4.86.24.31 3.32 5.07 8.04 7.11 1.12.48 2 .77 2.68.98 1.13.36 2.15.31 2.96.19.9-.13 2.79-1.14 3.18-2.24.39-1.1.39-2.04.27-2.24-.12-.2-.43-.31-.9-.55Z"/><path d="M16.02 2.67c-7.35 0-13.33 5.97-13.33 13.31 0 2.35.62 4.65 1.78 6.67L2.58 29.57l7.08-1.86a13.32 13.32 0 0 0 6.36 1.62h.01c7.35 0 13.33-5.97 13.33-13.31 0-3.56-1.39-6.9-3.91-9.42a13.24 13.24 0 0 0-9.43-3.93Zm0 24.41h-.01c-1.97 0-3.9-.53-5.58-1.53l-.4-.24-4.2 1.1 1.12-4.09-.26-.42a11.05 11.05 0 0 1-1.7-5.92c0-6.09 4.95-11.04 11.05-11.04 2.95 0 5.73 1.15 7.82 3.24a10.96 10.96 0 0 1 3.23 7.82c-.01 6.09-4.96 11.04-11.07 11.04Z"/></svg>';
+  }
+
+  function liveFaceSVG() {
+    return '' +
+      '<svg class="credis-liveface" viewBox="0 0 256 249" aria-hidden="true" focusable="false">' +
+        '<g class="credis-eye-covers">' +
+          '<ellipse class="credis-eye-cover" cx="99" cy="116" rx="22" ry="29"/>' +
+          '<ellipse class="credis-eye-cover" cx="160" cy="116" rx="22" ry="29"/>' +
+        '</g>' +
+
+        '<path class="credis-brow-live brow-left" d="M84 88 Q99 75 113 87"/>' +
+        '<path class="credis-brow-live brow-right" d="M145 86 Q161 75 176 90"/>' +
+
+        '<g class="credis-eye-live eye-left">' +
+          '<ellipse class="credis-eye-white" cx="99" cy="116" rx="17" ry="23"/>' +
+          '<g class="credis-pupil-group pupil-left">' +
+            '<ellipse class="credis-pupil" cx="100" cy="120" rx="9.4" ry="13"/>' +
+            '<circle class="credis-pupil-shine" cx="96.8" cy="115.5" r="3.3"/>' +
+          '</g>' +
+        '</g>' +
+        '<g class="credis-eye-live eye-right">' +
+          '<ellipse class="credis-eye-white" cx="160" cy="116" rx="17" ry="23"/>' +
+          '<g class="credis-pupil-group pupil-right">' +
+            '<ellipse class="credis-pupil" cx="161" cy="120" rx="9.4" ry="13"/>' +
+            '<circle class="credis-pupil-shine" cx="157.8" cy="115.5" r="3.3"/>' +
+          '</g>' +
+        '</g>' +
+
+        '<path class="credis-lid lid-left" d="M84 116 Q99 127 114 116"/>' +
+        '<path class="credis-lid lid-right" d="M145 116 Q160 127 176 116"/>' +
+
+        '<path class="credis-smile-live" d="M88 150 Q129 184 174 147"/>' +
+        '<path class="credis-smile-arrow" d="M167 144 L181 141 L176 155"/>' +
+      '</svg>';
   }
 
   function init() {
@@ -23,7 +58,7 @@
       '<button class="credis-mascot side-right" type="button" aria-label="Abrir a Credis, asistente de Credisnet" aria-haspopup="dialog" aria-expanded="false">' +
         '<span class="credis-figure">' +
           '<img class="credis-fullimg" src="' + FULL_IMG + '" alt="" aria-hidden="true">' +
-          '<img class="credis-peekimg" src="' + PEEK_IMG + '" alt="" aria-hidden="true">' +
+          liveFaceSVG() +
         '</span>' +
         '<span class="credis-speech" aria-hidden="true"></span>' +
       '</button>' +
@@ -59,6 +94,8 @@
     var answerText = root.querySelector('.credis-answer-text');
     var optionButtons = root.querySelectorAll('.credis-option');
     var waButtons = root.querySelectorAll('.credis-wa');
+    var pupilLeft = root.querySelector('.pupil-left');
+    var pupilRight = root.querySelector('.pupil-right');
 
     var answers = {
       monto: {
@@ -76,94 +113,254 @@
     };
 
     var state = {
-      side: 'right', topRatio: 0.58, dragging: false, moved: false,
-      pointerId: null, startX: 0, startY: 0, startLeft: 0, startTop: 0,
-      panelOpen: false, bubbleTimer: null, peekTimer: null, wakeTimer: null
+      side: 'right',
+      topRatio: 0.58,
+      dragging: false,
+      moved: false,
+      pointerId: null,
+      startX: 0,
+      startY: 0,
+      startLeft: 0,
+      startTop: 0,
+      panelOpen: false,
+      bubbleTimer: null,
+      peekTimer: null,
+      wakeTimer: null,
+      blinkTimer: null,
+      gestureTimer: null,
+      lastPointerX: null,
+      lastPointerY: null
     };
 
-    function viewport() { return { w: window.innerWidth, h: window.innerHeight }; }
-    function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
-    function bottomSafe() { return document.getElementById('wa-float') ? 92 : 22; }
-    function topSafe() { return window.innerWidth <= 640 ? 76 : 90; }
+    function viewport() {
+      return { w: window.innerWidth, h: window.innerHeight };
+    }
+    function clamp(v, min, max) {
+      return Math.max(min, Math.min(max, v));
+    }
+    function bottomSafe() {
+      return document.getElementById('wa-float') ? 92 : 22;
+    }
+    function topSafe() {
+      return window.innerWidth <= 640 ? 76 : 90;
+    }
 
     function savePosition() {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ side: state.side, topRatio: state.topRatio })); } catch (e) {}
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          side: state.side,
+          topRatio: state.topRatio
+        }));
+      } catch (e) {}
     }
+
     function loadPosition() {
       try {
         var saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-        if (saved && (saved.side === 'left' || saved.side === 'right') && typeof saved.topRatio === 'number') {
+        if (
+          saved &&
+          (saved.side === 'left' || saved.side === 'right') &&
+          typeof saved.topRatio === 'number'
+        ) {
           state.side = saved.side;
           state.topRatio = clamp(saved.topRatio, 0.15, 0.84);
         }
       } catch (e) {}
     }
+
     function setSideClass() {
       root.classList.toggle('side-left', state.side === 'left');
       root.classList.toggle('side-right', state.side === 'right');
       mascot.classList.toggle('side-left', state.side === 'left');
       mascot.classList.toggle('side-right', state.side === 'right');
     }
+
     function positionFromState(animate) {
       var vp = viewport();
-      var size = mascot.offsetHeight || 56;
+      var size = mascot.offsetHeight || 49;
+      var width = mascot.offsetWidth || 49;
       var minY = topSafe();
       var maxY = Math.max(minY, vp.h - size - bottomSafe());
       var y = clamp(state.topRatio * vp.h, minY, maxY);
-      var x = state.side === 'left' ? 4 : vp.w - (mascot.offsetWidth || 56) - 4;
+      var x = state.side === 'left' ? 4 : vp.w - width - 4;
+
       if (!animate) mascot.style.transition = 'none';
       mascot.style.left = x + 'px';
       mascot.style.top = y + 'px';
       setSideClass();
-      if (!animate) requestAnimationFrame(function () { mascot.style.transition = ''; });
+
+      if (!animate) {
+        requestAnimationFrame(function () {
+          mascot.style.transition = '';
+        });
+      }
     }
+
     function snapToEdge(x, y, animate) {
       var vp = viewport();
-      var size = mascot.offsetHeight || 56;
-      state.side = (x + (mascot.offsetWidth || 56) / 2) < vp.w / 2 ? 'left' : 'right';
+      var width = mascot.offsetWidth || 49;
+      var height = mascot.offsetHeight || 49;
+      state.side = (x + width / 2) < vp.w / 2 ? 'left' : 'right';
+
       var minY = topSafe();
-      var maxY = Math.max(minY, vp.h - size - bottomSafe());
+      var maxY = Math.max(minY, vp.h - height - bottomSafe());
       var clampedY = clamp(y, minY, maxY);
       state.topRatio = clamp(clampedY / vp.h, 0.1, 0.9);
+
       savePosition();
       positionFromState(animate !== false);
-      mascot.classList.add('is-happy');
-      setTimeout(function () { mascot.classList.remove('is-happy'); }, 600);
+
+      mascot.classList.add('is-happy', 'is-grinning');
+      setTimeout(function () {
+        mascot.classList.remove('is-happy', 'is-grinning');
+      }, 650);
+
       wakeUp();
     }
 
-    function hideSpeech() { speech.classList.remove('is-visible'); }
-    var messages = ['¡Hola! 👋', '¿Necesitás una mano?', 'Estoy por acá 😄', '¿Querés consultar tu disponible? 👀'];
+    function setLook(dx, dy) {
+      if (!pupilLeft || !pupilRight) return;
+      dx = clamp(dx, -5.2, 5.2);
+      dy = clamp(dy, -4.0, 4.0);
+      var t = 'translate(' + dx.toFixed(2) + ' ' + dy.toFixed(2) + ')';
+      pupilLeft.setAttribute('transform', t);
+      pupilRight.setAttribute('transform', t);
+    }
+
+    function lookAtPointer(clientX, clientY) {
+      if (state.dragging || state.panelOpen) return;
+      var rect = mascot.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2;
+      var cy = rect.top + rect.height / 2;
+      var vx = clientX - cx;
+      var vy = clientY - cy;
+      var dist = Math.sqrt(vx * vx + vy * vy);
+
+      if (dist < 900) {
+        setLook(
+          clamp(vx / 52, -5.2, 5.2),
+          clamp(vy / 70, -4.0, 4.0)
+        );
+      } else {
+        setLook(0, 0);
+      }
+    }
+
+    function lookFront() {
+      setLook(0, 0);
+    }
+
+    function hideSpeech() {
+      speech.classList.remove('is-visible');
+    }
+
+    var messages = [
+      '¡Hola! 👋',
+      '¿Necesitás una mano?',
+      'Estoy por acá 😄',
+      '¿Querés consultar tu disponible? 👀'
+    ];
+
     function speechLoop(first) {
       if (reducedMotion) return;
       clearTimeout(state.bubbleTimer);
+
       state.bubbleTimer = setTimeout(function () {
-        if (!state.dragging && !state.panelOpen && !document.hidden && !mascot.classList.contains('is-peeking')) {
+        if (
+          !state.dragging &&
+          !state.panelOpen &&
+          !document.hidden &&
+          !mascot.classList.contains('is-peeking')
+        ) {
           speech.textContent = messages[Math.floor(Math.random() * messages.length)];
           speech.classList.add('is-visible');
-          setTimeout(hideSpeech, 3600);
+          setTimeout(hideSpeech, 3300);
         }
         speechLoop(false);
-      }, first ? 8000 : 16000 + Math.random() * 12000);
+      }, first ? 9000 : 17000 + Math.random() * 13000);
     }
 
     function schedulePeek() {
       clearTimeout(state.peekTimer);
       if (state.dragging || state.panelOpen || document.hidden) return;
+
       state.peekTimer = setTimeout(function () {
-        mascot.classList.add('is-peeking');
         hideSpeech();
-      }, reducedMotion ? 9000 : 5200);
+        mascot.classList.remove('is-curious', 'is-nodding', 'is-winking', 'is-grinning');
+        mascot.classList.add('is-peeking');
+      }, reducedMotion ? 9000 : 5400);
     }
+
     function wakeUp() {
       clearTimeout(state.peekTimer);
+
       if (mascot.classList.contains('is-peeking')) {
         mascot.classList.remove('is-peeking');
         mascot.classList.add('is-waking');
+
         clearTimeout(state.wakeTimer);
-        state.wakeTimer = setTimeout(function () { mascot.classList.remove('is-waking'); }, 450);
+        state.wakeTimer = setTimeout(function () {
+          mascot.classList.remove('is-waking');
+        }, 460);
       }
+
       schedulePeek();
+    }
+
+    function blinkLoop() {
+      if (reducedMotion) return;
+      clearTimeout(state.blinkTimer);
+
+      state.blinkTimer = setTimeout(function () {
+        if (!state.dragging && !state.panelOpen) {
+          mascot.classList.add('is-blinking');
+          setTimeout(function () {
+            mascot.classList.remove('is-blinking');
+          }, 120);
+        }
+        blinkLoop();
+      }, 2600 + Math.random() * 4200);
+    }
+
+    function gestureLoop() {
+      if (reducedMotion) return;
+      clearTimeout(state.gestureTimer);
+
+      state.gestureTimer = setTimeout(function () {
+        if (
+          !state.dragging &&
+          !state.panelOpen &&
+          !document.hidden &&
+          !mascot.classList.contains('is-peeking')
+        ) {
+          var gestures = ['curious', 'nod', 'wink', 'grin'];
+          var g = gestures[Math.floor(Math.random() * gestures.length)];
+
+          if (g === 'curious') {
+            mascot.classList.add('is-curious');
+            setTimeout(function () {
+              mascot.classList.remove('is-curious');
+            }, 760);
+          } else if (g === 'nod') {
+            mascot.classList.add('is-nodding');
+            setTimeout(function () {
+              mascot.classList.remove('is-nodding');
+            }, 760);
+          } else if (g === 'wink') {
+            mascot.classList.add('is-winking');
+            setTimeout(function () {
+              mascot.classList.remove('is-winking');
+            }, 520);
+          } else {
+            mascot.classList.add('is-grinning');
+            setTimeout(function () {
+              mascot.classList.remove('is-grinning');
+            }, 820);
+          }
+        }
+
+        gestureLoop();
+      }, 5000 + Math.random() * 6500);
     }
 
     function openPanel() {
@@ -173,45 +370,78 @@
       root.classList.add('is-open');
       panel.setAttribute('aria-hidden', 'false');
       mascot.setAttribute('aria-expanded', 'true');
-      mascot.classList.add('is-happy');
-      setTimeout(function () { mascot.classList.remove('is-happy'); }, 600);
-      setTimeout(function () { closeBtn.focus({ preventScroll: true }); }, 80);
+
+      mascot.classList.add('is-happy', 'is-grinning');
+      lookFront();
+
+      setTimeout(function () {
+        mascot.classList.remove('is-happy', 'is-grinning');
+      }, 650);
+
+      setTimeout(function () {
+        closeBtn.focus({ preventScroll: true });
+      }, 80);
     }
+
     function closePanel(returnFocus) {
       state.panelOpen = false;
       root.classList.remove('is-open');
       panel.setAttribute('aria-hidden', 'true');
       mascot.setAttribute('aria-expanded', 'false');
-      if (returnFocus !== false) mascot.focus({ preventScroll: true });
+
+      if (returnFocus !== false) {
+        mascot.focus({ preventScroll: true });
+      }
+
       schedulePeek();
     }
 
     optionButtons.forEach(function (btn) {
       btn.addEventListener('click', function () {
-        wakeUp();
         var answer = answers[this.getAttribute('data-key')];
         if (!answer) return;
+
+        mascot.classList.add('is-grinning');
+        setTimeout(function () {
+          mascot.classList.remove('is-grinning');
+        }, 750);
+
         answerTitle.textContent = answer.title;
         answerText.textContent = answer.text;
         answerBox.classList.add('is-visible');
       });
     });
+
     waButtons.forEach(function (link) {
       link.addEventListener('click', function () {
-        setTimeout(function () { closePanel(false); }, 80);
+        setTimeout(function () {
+          closePanel(false);
+        }, 80);
       });
     });
-    closeBtn.addEventListener('click', function () { closePanel(true); });
-    backdrop.addEventListener('click', function () { closePanel(true); });
+
+    closeBtn.addEventListener('click', function () {
+      closePanel(true);
+    });
+
+    backdrop.addEventListener('click', function () {
+      closePanel(true);
+    });
+
     document.addEventListener('keydown', function (e) {
-      if (state.panelOpen && e.key === 'Escape') closePanel(true);
-      else if (!state.panelOpen) wakeUp();
+      if (state.panelOpen && e.key === 'Escape') {
+        closePanel(true);
+      } else if (!state.panelOpen) {
+        wakeUp();
+      }
     });
 
     mascot.addEventListener('pointerdown', function (e) {
       if (state.panelOpen) return;
+
       hideSpeech();
       wakeUp();
+
       state.dragging = true;
       state.moved = false;
       state.pointerId = e.pointerId;
@@ -219,55 +449,117 @@
       state.startY = e.clientY;
       state.startLeft = parseFloat(mascot.style.left) || mascot.getBoundingClientRect().left;
       state.startTop = parseFloat(mascot.style.top) || mascot.getBoundingClientRect().top;
+
       mascot.classList.add('is-dragging');
       mascot.classList.remove('is-peeking');
-      try { mascot.setPointerCapture(e.pointerId); } catch (err) {}
+
+      try {
+        mascot.setPointerCapture(e.pointerId);
+      } catch (err) {}
     });
+
     mascot.addEventListener('pointermove', function (e) {
       if (!state.dragging || e.pointerId !== state.pointerId) return;
+
       var dx = e.clientX - state.startX;
       var dy = e.clientY - state.startY;
-      if (Math.abs(dx) + Math.abs(dy) > 7) state.moved = true;
+
+      if (Math.abs(dx) + Math.abs(dy) > 7) {
+        state.moved = true;
+      }
+
       if (!state.moved) return;
+
       var vp = viewport();
-      var width = mascot.offsetWidth || 56;
-      var height = mascot.offsetHeight || 56;
+      var width = mascot.offsetWidth || 49;
+      var height = mascot.offsetHeight || 49;
+
       mascot.style.left = clamp(state.startLeft + dx, 0, vp.w - width) + 'px';
-      mascot.style.top = clamp(state.startTop + dy, topSafe(), vp.h - height - bottomSafe()) + 'px';
+      mascot.style.top = clamp(
+        state.startTop + dy,
+        topSafe(),
+        vp.h - height - bottomSafe()
+      ) + 'px';
+
+      setLook(
+        clamp(dx / 8, -5.2, 5.2),
+        clamp(dy / 10, -4.0, 4.0)
+      );
     });
+
     function endDrag(e) {
-      if (!state.dragging || (e.pointerId != null && e.pointerId !== state.pointerId)) return;
+      if (
+        !state.dragging ||
+        (e.pointerId != null && e.pointerId !== state.pointerId)
+      ) return;
+
       state.dragging = false;
       mascot.classList.remove('is-dragging');
-      try { mascot.releasePointerCapture(state.pointerId); } catch (err) {}
+
+      try {
+        mascot.releasePointerCapture(state.pointerId);
+      } catch (err) {}
+
       var rect = mascot.getBoundingClientRect();
-      if (state.moved) snapToEdge(rect.left, rect.top, true);
-      else openPanel();
+
+      if (state.moved) {
+        snapToEdge(rect.left, rect.top, true);
+      } else {
+        openPanel();
+      }
+
       state.pointerId = null;
+      lookFront();
     }
+
     mascot.addEventListener('pointerup', endDrag);
     mascot.addEventListener('pointercancel', endDrag);
 
     function wakeOnActivity(e) {
       if (state.dragging || state.panelOpen || document.hidden) return;
       if (e && e.pointerType === 'touch' && e.type === 'pointermove') return;
+
       wakeUp();
+
+      if (
+        e &&
+        typeof e.clientX === 'number' &&
+        typeof e.clientY === 'number'
+      ) {
+        state.lastPointerX = e.clientX;
+        state.lastPointerY = e.clientY;
+        lookAtPointer(e.clientX, e.clientY);
+      }
     }
+
     document.addEventListener('pointermove', wakeOnActivity, { passive: true });
+    document.addEventListener('mousemove', wakeOnActivity, { passive: true });
     document.addEventListener('scroll', wakeOnActivity, { passive: true });
     document.addEventListener('touchstart', wakeOnActivity, { passive: true });
     document.addEventListener('click', wakeOnActivity, { passive: true });
+
     document.addEventListener('visibilitychange', function () {
-      if (!document.hidden && !state.panelOpen) wakeUp();
+      if (!document.hidden && !state.panelOpen) {
+        wakeUp();
+        lookFront();
+      }
     });
-    window.addEventListener('resize', function () { positionFromState(false); });
+
+    window.addEventListener('resize', function () {
+      positionFromState(false);
+    });
 
     loadPosition();
     positionFromState(false);
+    blinkLoop();
+    gestureLoop();
     speechLoop(true);
     schedulePeek();
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
-  else init();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
 })();
