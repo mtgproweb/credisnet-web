@@ -1,4 +1,5 @@
-/* Credis · mascota flotante de Credisnet. Archivo aislado del CSS principal. */
+
+/* Credis · mascota flotante de Credisnet · versión refinada */
 #credis-assistant {
   --credis-green: var(--green, #00C853);
   --credis-green-light: var(--green-light, #5EFC8D);
@@ -14,32 +15,61 @@
   position: fixed;
   left: 0;
   top: 0;
-  width: 54px;
-  height: 54px;
+  width: 56px;
+  height: 56px;
   padding: 0;
   border: 0;
   background: transparent;
-  border-radius: 18px;
   cursor: grab;
   pointer-events: auto;
   touch-action: none;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
-  filter: drop-shadow(0 8px 16px rgba(0,0,0,.32));
-  transition: left .42s cubic-bezier(.2,.9,.22,1.12), top .42s cubic-bezier(.2,.9,.22,1.12), filter .2s ease;
+  transition: left .42s cubic-bezier(.2,.9,.22,1.12), top .42s cubic-bezier(.2,.9,.22,1.12), transform .28s ease, filter .2s ease;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,.30));
 }
-.credis-mascot:focus-visible { outline: 3px solid rgba(94,252,141,.85); outline-offset: 5px; }
-.credis-mascot:hover { filter: drop-shadow(0 10px 22px rgba(0,200,83,.28)) drop-shadow(0 8px 16px rgba(0,0,0,.28)); }
+.credis-mascot:focus-visible { outline: 3px solid rgba(94,252,141,.85); outline-offset: 5px; border-radius: 16px; }
+.credis-mascot:hover { filter: drop-shadow(0 10px 22px rgba(0,200,83,.22)) drop-shadow(0 8px 16px rgba(0,0,0,.26)); }
 .credis-mascot.is-dragging { cursor: grabbing; transition: none; filter: drop-shadow(0 12px 24px rgba(0,0,0,.38)); }
-.credis-shell { width: 100%; height: 100%; display: block; animation: credisFloat 3.8s ease-in-out infinite; transform-origin: 50% 55%; }
-.credis-mascot.is-dragging .credis-shell { animation: none; transform: rotate(-5deg) scale(1.05); }
-.credis-mascot.is-happy .credis-shell { animation: credisHappy .55s cubic-bezier(.2,.9,.2,1.25) 1; }
-.credis-mascot svg { width: 100%; height: 100%; display: block; overflow: visible; }
-.credis-eye { transform-box: fill-box; transform-origin: center; transition: transform .08s ease; }
-.credis-mascot.is-blinking .credis-eye { transform: scaleY(.12); }
-.credis-brow { transition: transform .22s ease; }
-.credis-mascot.is-curious .credis-brow-left { transform: translateY(-1px) rotate(-5deg); }
-.credis-mascot.is-curious .credis-brow-right { transform: translateY(1px) rotate(4deg); }
+.credis-mascot.is-happy .credis-figure { animation: credisHappy .55s cubic-bezier(.2,.9,.2,1.25) 1; }
+.credis-mascot.is-waking .credis-figure { animation: credisWake .42s ease-out 1; }
+.credis-mascot.is-peeking.side-right { transform: translateX(12px); }
+.credis-mascot.is-peeking.side-left { transform: translateX(-12px); }
+.credis-figure {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block;
+  animation: credisFloat 3.8s ease-in-out infinite;
+  transform-origin: 50% 55%;
+}
+.credis-mascot.is-dragging .credis-figure { animation: none; transform: rotate(-5deg) scale(1.05); }
+.credis-fullimg,
+.credis-peekimg {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.credis-fullimg {
+  width: 56px;
+  height: auto;
+  opacity: 1;
+  transition: opacity .18s ease;
+}
+.credis-peekimg {
+  width: 31px;
+  height: auto;
+  opacity: 0;
+  transition: opacity .18s ease;
+}
+.side-right .credis-peekimg { right: 0; left: auto; }
+.side-left .credis-peekimg { left: 0; right: auto; transform: scaleX(-1); }
+.credis-mascot.is-peeking .credis-fullimg { opacity: 0; }
+.credis-mascot.is-peeking .credis-peekimg { opacity: 1; }
 
 .credis-speech {
   position: absolute;
@@ -99,7 +129,8 @@
 #credis-assistant.is-open .credis-backdrop { opacity: 1; visibility: visible; pointer-events: auto; }
 #credis-assistant.is-open .credis-panel { opacity: 1; visibility: visible; transform: translateY(0) scale(1); pointer-events: auto; }
 .credis-panel-head { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; }
-.credis-mini { width: 42px; height: 42px; flex: 0 0 42px; filter: drop-shadow(0 5px 10px rgba(0,200,83,.18)); }
+.credis-mini { width: 42px; height: 42px; flex: 0 0 42px; display: block; }
+.credis-mini img { width: 100%; height: auto; display: block; }
 .credis-title-wrap { min-width: 0; flex: 1; }
 .credis-kicker { color: var(--credis-green-light); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .credis-title { margin: 2px 0 0; font-size: 21px; line-height: 1.1; font-weight: 850; color: #fff; }
@@ -139,14 +170,17 @@
 
 @keyframes credisFloat { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-3px) rotate(1.2deg); } }
 @keyframes credisHappy { 0%{transform:scale(1)} 38%{transform:scale(1.12) rotate(-4deg)} 70%{transform:scale(.97) rotate(2deg)} 100%{transform:scale(1)} }
+@keyframes credisWake { 0%{transform:translateX(0) scale(1)} 45%{transform:translateX(-2px) scale(1.08)} 100%{transform:translateX(0) scale(1)} }
 @keyframes credisAnswerIn { from { opacity:0; transform:translateY(5px) } to { opacity:1; transform:none } }
 
 @media (max-width: 640px) {
-  .credis-mascot { width: 50px; height: 50px; }
+  .credis-mascot { width: 52px; height: 52px; }
+  .credis-fullimg { width: 52px; }
+  .credis-peekimg { width: 29px; }
   .credis-panel { left: 10px; right: 10px; bottom: 10px; width: auto; max-height: min(620px, calc(100vh - 20px)); padding: 16px; border-radius: 22px; }
   .credis-speech { max-width: 175px; font-size: 11.5px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .credis-shell, .credis-mascot.is-happy .credis-shell { animation: none !important; }
+  .credis-figure, .credis-mascot.is-happy .credis-figure, .credis-mascot.is-waking .credis-figure { animation: none !important; }
   .credis-mascot, .credis-panel, .credis-backdrop, .credis-speech { transition-duration: .01ms !important; }
 }
